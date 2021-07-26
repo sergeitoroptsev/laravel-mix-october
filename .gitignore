@@ -1,0 +1,17 @@
+#ignore everything
+/*
+
+#whitelist files
+!.gitignore
+!package.json
+!composer.json
+!webpack.mix.js
+!tailwind.config.js
+
+# whitelist themes
+!/themes/
+
+#whitelist acme plugins
+!/plugins/
+/plugins/*
+!plugins/acme/
