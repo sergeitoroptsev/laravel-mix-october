@@ -1,3 +1,5 @@
-# Laravel Mix example for October CMS
+# Laravel Mix with Tailwind example for October CMS
 
-After last update it compiles all css and js files from assets/src to assets/public as separate style and js files.
+1. Create in Your theme resoures/js/app.js and resources/css/app.css files.
+2. All files will be compiled into assets/css and assets/js
+3. If You need to add additional js files, just add them to arJsPage array
