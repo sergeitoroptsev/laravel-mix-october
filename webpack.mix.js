@@ -1,40 +1,47 @@
-let mix = require('laravel-mix');
+const path = require('path');
+const mix = require('laravel-mix')
+require('dotenv').config({ path: path.resolve(__dirname, './../../.env') })
 
-require('mix-tailwindcss');
+const arJsPage = [
+    'resources/js/app.js',
+    // add here paths to additional js scripts
+]
 
-let fs  = require('fs');
+const arCssPage = [
+    'resources/css/app.css',
+]
 
-let getFiles = function (dir) {
-    return fs.readdirSync(dir).filter(file => {
-        return fs.statSync(`${dir}/${file}`).isFile();
-    });
-};
+mix.webpackConfig({
+    resolve: {
+        modules: [
+            path.resolve(__dirname, 'node_modules')
+        ]
+    }
+})
 
-getFiles('./themes/' + process.env.ACTIVE_THEME + '/assets/src/js/').forEach(function (JSpath) {
-    mix
-        .setPublicPath('./themes/' + process.env.ACTIVE_THEME + '/assets/')
-        .setResourceRoot('/themes/' + process.env.ACTIVE_THEME + '/assets/')
-        .js('./themes/' + process.env.ACTIVE_THEME + '/assets/src/js/' + JSpath, 'public/js')
-        .sourceMaps(false)
+arJsPage.forEach(sJsPage => {
+    mix.js(sJsPage, 'js')
+})
+
+arCssPage.forEach(sCssPage => {
+    mix.postCss(sCssPage, 'css', [
+        require("tailwindcss"),
+    ])
+})
+
+mix.options({
+    clearConsole: true,
 });
 
-getFiles('./themes/' + process.env.ACTIVE_THEME + '/assets/src/css/').forEach(function (CSSpath) {
-    mix
-        .setPublicPath('./themes/' + process.env.ACTIVE_THEME + '/assets/')
-        .setResourceRoot('/themes/' + process.env.ACTIVE_THEME + '/assets/')
-        .postCss('./themes/' + process.env.ACTIVE_THEME + '/assets/src/css/' + CSSpath, 'public/css')
-        .tailwind()
-        .options({
-            processCssUrls: false
-        })
-        .sourceMaps(false)
-});
+mix.setPublicPath('assets')
+mix.setResourceRoot('/themes/' + process.env.ACTIVE_THEME + '/assets')
 
-mix
-    .browserSync({
-        proxy: process.env.APP_URL,
-        host: process.env.APP_URL,
-        browser: 'google chrome',
-        notify: false,
-        files: ["./themes/" + process.env.ACTIVE_THEME + "/assets/public/css/*.css", "./**/*.htm", "./themes/" + process.env.ACTIVE_THEME + "/assets/public/js/*.js"]
-    });
+mix.disableNotifications()
+
+mix.browserSync({
+    proxy: process.env.APP_URL,
+    host: process.env.APP_URL,
+    browser: 'google chrome',
+    notify: false,
+    files: ["/resources/css/*.css", "./**/*.htm", "/resources/js/**/*.js"]
+})
